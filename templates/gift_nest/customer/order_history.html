@@ -1,0 +1,47 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Order History</h2>
+    <div class="table-responsive shadow-sm rounded bg-white">
+        <table class="table table-hover mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.order_date|date:"F d, Y" }}</td>
+                    <td>${{ order.total_amount }}</td>
+                    <td><span class="badge bg-{% if order.is_paid %}success{% else %}danger{% endif %}">{% if order.is_paid %}Paid{% else %}Unpaid{% endif %}</span></td>
+                    <td><span class="badge bg-info text-dark">{{ order.status }}</span></td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{% url 'track_delivery' order.id %}" class="btn btn-sm btn-outline-dark">Track</a>
+                            <a href="{% url 'download_invoice' order.id %}" class="btn btn-sm btn-outline-secondary">Invoice</a>
+                            {% if order.status == 'Delivered' %}
+                                <a href="{% url 'return_order' order.id %}" class="btn btn-sm btn-outline-warning">Return</a>
+                            {% elif order.status in 'Pending Placed' %}
+                                <a href="{% url 'cancel_order' order.id %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5">You have no orders yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

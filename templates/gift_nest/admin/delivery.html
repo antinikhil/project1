@@ -1,0 +1,71 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Delivery Management</h2>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Active Delivery Assignments</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Order #</th>
+                                <th>Delivery Person</th>
+                                <th>Assigned At</th>
+                                <th>Status</th>
+                                <th>Last Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assignment in assignments %}
+                            <tr>
+                                <td>#{{ assignment.order.id }}</td>
+                                <td>{{ assignment.delivery_person.user.username }}</td>
+                                <td>{{ assignment.assigned_at|date:"M d, H:i" }}</td>
+                                <td><span class="badge bg-info text-dark">{{ assignment.status }}</span></td>
+                                <td>{{ assignment.updated_at|date:"M d, H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">No active assignments.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-5">
+        <h4>Assign New Delivery</h4>
+        <div class="card p-4 shadow-sm border-0">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label text-muted">Order ID</label>
+                        <input type="text" name="order_id" class="form-control" placeholder="e.g. 101">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label text-muted">Select Staff</label>
+                        <select name="delivery_person_id" class="form-select">
+                            {% for person in delivery_persons %}
+                            <option value="{{ person.id }}">{{ person.user.get_full_name|default:person.user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-gold w-100">Assign</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

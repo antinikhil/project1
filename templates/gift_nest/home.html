@@ -1,0 +1,89 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center text-white d-flex align-items-center mb-5" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2040&auto=format&fit=crop'); background-size: cover; background-position: center; height: 500px;">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-3" style="font-family: 'Playfair Display', serif;">Crafting Moments of Joy</h1>
+        <p class="lead mb-4 fs-3">Discover the perfect gift for every special occasion.</p>
+        <a href="{% url 'product_list' %}" class="btn btn-gold btn-lg px-5 py-3 fs-5">Shop the Collection</a>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-5">Shop by Category</h2>
+    <div class="row g-4">
+        {% for category in categories %}
+        <div class="col-md-3">
+            <a href="{% url 'product_list_by_category' category.id %}" class="text-decoration-none">
+                <div class="card text-center p-4">
+                    {% if category.image_url %}
+                        <img src="{{ category.image_url }}" class="card-img-top mx-auto" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% elif category.image %}
+                        <img src="{{ category.image.url }}" class="card-img-top mx-auto" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/200" class="card-img-top mx-auto" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">{{ category.name }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <p class="text-center">No categories found. Check back soon!</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-5">Trending Gifts</h2>
+    <div class="row g-4">
+        {% for product in featured_products %}
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="position-relative">
+                    {% if product.image_url %}
+                        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% elif product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="{{ product.name }}">
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted">{{ product.category.name }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h5 mb-0">${{ product.price }}</span>
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-dark btn-sm">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% if offers %}
+<div class="bg-light py-5 mt-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Exclusive Offers</h2>
+        <div class="row g-4">
+            {% for offer in offers %}
+            <div class="col-md-6">
+                <div class="card p-4 border-start border-warning border-5">
+                    <h3>{{ offer.title }}</h3>
+                    <p>{{ offer.description }}</p>
+                    <div class="d-flex align-items-center">
+                        <span class="h2 text-danger mb-0">{{ offer.discount_percentage }}% OFF</span>
+                        <span class="ms-3 badge bg-dark">Use Code: {{ offer.code }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

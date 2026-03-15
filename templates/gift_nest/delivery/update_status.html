@@ -1,0 +1,34 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg p-4">
+                <h3 class="mb-4">Update Delivery Status</h3>
+                <div class="alert alert-info">
+                    <strong>Order #{{ assignment.order.id }}</strong><br>
+                    Current Status: {{ assignment.status }}
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Select New Status</label>
+                        <select name="status" class="form-select form-select-lg">
+                            <option value="Assigned" {% if assignment.status == 'Assigned' %}selected{% endif %}>Assigned</option>
+                            <option value="Picked Up" {% if assignment.status == 'Picked Up' %}selected{% endif %}>Picked Up</option>
+                            <option value="In Transit" {% if assignment.status == 'In Transit' %}selected{% endif %}>In Transit</option>
+                            <option value="Delivered" {% if assignment.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                            <option value="Failed" {% if assignment.status == 'Failed' %}selected{% endif %}>Failed / Attempt Unsuccessful</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg w-100 py-3">Update & Notify Customer</button>
+                    <a href="{% url 'delivery_dashboard' %}" class="btn btn-link w-100 mt-2">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg p-4">
+                <h2 class="text-center mb-4">Simulated Payment Gateway</h2>
+                <p class="text-center text-muted mb-4">To complete your purchase of <strong>${{ total }}</strong>, please verify your payment.</p>
+                
+                <div class="bg-light p-3 rounded mb-4 text-center">
+                    <p class="mb-2">A test OTP has been sent to your registered mobile number.</p>
+                    <p class="fw-bold mb-0">Test OTP: <span class="text-primary">123456</span></p>
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Enter OTP</label>
+                        <input type="text" name="otp" class="form-control form-control-lg text-center" placeholder="X X X X X X" maxlength="6" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Select Payment Mode</label>
+                        <select class="form-select" name="payment_mode">
+                            <option value="Card">Credit/Debit Card</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Net Banking">Net Banking</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-gold btn-lg w-100 py-3">Verify & Pay</button>
+                </form>
+                
+                <p class="text-center mt-4 small text-muted">Secure transaction. No real money will be charged in this simulation.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

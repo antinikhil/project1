@@ -1,0 +1,83 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-lg p-2">
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                {% elif product.image %}
+                    <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/600" class="img-fluid rounded" alt="{{ product.name }}">
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="ps-md-4">
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Shop</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'product_list_by_category' product.category.id %}">{{ product.category.name }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                  </ol>
+                </nav>
+                <h1 class="display-5 fw-bold">{{ product.name }}</h1>
+                <div class="mb-3">
+                    <span class="badge bg-success p-2">⭐ {{ product.rating|default:"New" }}</span>
+                    <span class="text-muted ms-2">({{ feedbacks.count }} Reviews)</span>
+                </div>
+                <h2 class="text-deep-teal mb-4">${{ product.price }}</h2>
+                <p class="lead">{{ product.description }}</p>
+                
+                <hr class="my-4">
+                
+                <form action="{% url 'add_to_cart' product.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Customization Message (Optional)</label>
+                        <textarea class="form-control" name="customization" rows="3" placeholder="Engrave name, a sweet message, etc..."></textarea>
+                    </div>
+                    <div class="row g-3 align-items-center mb-4">
+                        <div class="col-auto">
+                            <label class="form-label fw-bold mb-0">Quantity:</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ product.stock_quantity }}" style="width: 80px;">
+                        </div>
+                        <div class="col-auto">
+                            <span class="text-muted">({{ product.stock_quantity }} in stock)</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-gold btn-lg w-100">Add to Cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h3>Customer Reviews</h3>
+        <hr>
+        {% for feedback in feedbacks %}
+        <div class="card mb-3 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h5 class="mb-1 fw-bold">{{ feedback.customer.user.username }}</h5>
+                    <span class="text-warning">
+                        {% for i in "12345" %}
+                            {% if i|add:"0" <= feedback.rating %}★{% else %}☆{% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <p class="text-muted small mb-2">{{ feedback.created_at|date:"F d, Y" }}</p>
+                <p class="mb-0">{{ feedback.comment }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center py-4 bg-white rounded shadow-sm">No reviews yet for this product. Be the first to share your experience!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

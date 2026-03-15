@@ -1,0 +1,36 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-5 display-4">Special Offers & Discounts</h1>
+    <div class="row g-4">
+        {% for offer in offers %}
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0 bg-white">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h2 class="h3 mb-0">{{ offer.title }}</h2>
+                        <span class="badge bg-danger p-2">{{ offer.discount_percentage }}% OFF</span>
+                    </div>
+                    <p class="lead text-muted">{{ offer.description }}</p>
+                    <div class="bg-light p-3 rounded d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <small class="text-muted d-block">PROMO CODE</small>
+                            <span class="h4 text-deep-teal mb-0 fw-bold">{{ offer.code }}</span>
+                        </div>
+                        <button class="btn btn-outline-dark btn-sm" onclick="navigator.clipboard.writeText('{{ offer.code }}'); alert('Code copied!')">Copy Code</button>
+                    </div>
+                    <p class="small text-muted mb-0">Valid until: {{ offer.valid_to|date:"M d, Y" }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="h1 mb-3 d-block text-muted">🎁</i>
+            <h3>No active offers right now.</h3>
+            <p class="text-muted">Stay tuned! We have exciting discounts coming your way soon.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

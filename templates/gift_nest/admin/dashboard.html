@@ -1,0 +1,76 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2">
+            <div class="list-group shadow-sm rounded">
+                <a href="{% url 'admin_dashboard' %}" class="list-group-item list-group-item-action active">Dashboard</a>
+                <a href="{% url 'manage_products' %}" class="list-group-item list-group-item-action">Products</a>
+                <a href="{% url 'manage_categories' %}" class="list-group-item list-group-item-action">Categories</a>
+                <a href="{% url 'manage_orders' %}" class="list-group-item list-group-item-action">Orders</a>
+                <a href="{% url 'manage_customers' %}" class="list-group-item list-group-item-action">Customers</a>
+                <a href="{% url 'manage_delivery' %}" class="list-group-item list-group-item-action">Delivery Staff</a>
+                <a href="{% url 'reports_page' %}" class="list-group-item list-group-item-action">Reports</a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-10">
+            <h2 class="mb-4">Admin Command Center</h2>
+            
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card bg-deep-teal text-white p-4">
+                        <small class="text-white-50">Total Revenue</small>
+                        <h2 class="display-5 fw-bold">${{ total_revenue }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-gold text-white p-4">
+                        <small class="text-white-50">Total Orders</small>
+                        <h2 class="display-5 fw-bold">{{ total_orders }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-white p-4">
+                        <small class="text-muted">Total Customers</small>
+                        <h2 class="display-5 fw-bold text-dark">{{ total_customers }}</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Recent Orders</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Order</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.customer.user.username }}</td>
+                                <td>${{ order.total_amount }}</td>
+                                <td><span class="badge bg-{% if order.status == 'Delivered' %}success{% elif order.status == 'Cancelled' %}danger{% else %}warning text-dark{% endif %}">{{ order.status }}</span></td>
+                                <td>{{ order.order_date|date:"d M, H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

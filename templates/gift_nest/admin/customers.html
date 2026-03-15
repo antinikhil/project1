@@ -1,0 +1,37 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Customer Accounts</h2>
+    
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Total Orders</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.user.username }}</td>
+                        <td>{{ customer.user.email }}</td>
+                        <td>{{ customer.phone_number }}</td>
+                        <td>{{ customer.orders.count }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-dark">View Details</button>
+                            <button class="btn btn-sm btn-outline-danger">Deactivate</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

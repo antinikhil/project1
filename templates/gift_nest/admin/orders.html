@@ -1,0 +1,49 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Manage Orders</h2>
+    </div>
+    
+    <div class="card shadow-sm border-0 bg-white">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.customer.user.username }}</td>
+                        <td>{{ order.order_date|date:"M d, Y" }}</td>
+                        <td>${{ order.total_amount }}</td>
+                        <td>
+                            <form action="" method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <select name="status" class="form-select form-select-sm d-inline-block w-auto" onchange="this.form.submit()">
+                                    {% for status_val, status_name in order.STATUS_CHOICES %}
+                                    <option value="{{ status_val }}" {% if order.status == status_val %}selected{% endif %}>{{ status_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="{% url 'track_delivery' order.id %}" class="btn btn-sm btn-outline-primary">Track</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

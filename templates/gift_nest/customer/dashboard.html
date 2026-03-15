@@ -1,0 +1,61 @@
+{% extends 'gift_nest/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 mb-4 p-3 text-center">
+                {% if customer.profile_picture %}
+                    <img src="{{ customer.profile_picture.url }}" class="rounded-circle mx-auto mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                {% else %}
+                    <img src="https://via.placeholder.com/150" class="rounded-circle mx-auto mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                {% endif %}
+                <h4>{{ user.username }}</h4>
+                <p class="text-muted mb-0">Customer</p>
+            </div>
+            <div class="list-group shadow-sm rounded">
+                <a href="{% url 'customer_dashboard' %}" class="list-group-item list-group-item-action active">Dashboard</a>
+                <a href="{% url 'order_history' %}" class="list-group-item list-group-item-action">My Orders</a>
+                <a href="{% url 'profile_page' %}" class="list-group-item list-group-item-action">Profile Settings</a>
+                <a href="{% url 'cart_page' %}" class="list-group-item list-group-item-action">Saved Cart</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h2>Welcome back, {{ user.first_name|default:user.username }}!</h2>
+            <p class="lead">From your dashboard, you can track your recently placed orders and manage your account.</p>
+            
+            <div class="mt-5">
+                <h4>Recent Orders</h4>
+                <div class="table-responsive shadow-sm rounded bg-white">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.order_date|date:"M d, Y" }}</td>
+                                <td>${{ order.total_amount }}</td>
+                                <td><span class="badge bg-{% if order.status == 'Delivered' %}success{% elif order.status == 'Cancelled' %}danger{% else %}warning text-dark{% endif %}">{{ order.status }}</span></td>
+                                <td><a href="{% url 'track_delivery' order.id %}" class="btn btn-sm btn-outline-dark">Track</a></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">You haven't placed any orders yet. <a href="{% url 'product_list' %}">Start shopping!</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
